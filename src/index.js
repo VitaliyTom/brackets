@@ -1,7 +1,5 @@
 module.exports = function check(str, bracketsConfig) {
-    console.log(str);
-    console.log(bracketsConfig);
-
+  
     let circleOpenBracket = 0;
     let circleCloseBracket = 0;
     let squareOpenBrackets = 0;
@@ -9,41 +7,14 @@ module.exports = function check(str, bracketsConfig) {
     let figureOpenBrackets = 0;
     let figureCloseBrackets = 0;
     let line = 0;
-    // let stringArr = bracketsConfig.flat();
 
-    // count(str);
+if(circleOpenBracket !== circleCloseBracket ||
+  squareOpenBrackets !== squareCloseBrackets ||
+  figureOpenBrackets !== figureCloseBrackets ||
+  (line % 2 === 0 && line !== 0)){
+      return false;
+  }
 
-    // for (let i = 0; i < bracketsConfig.length; i++) {
-    //
-    //     for (let j = 0; j < bracketsConfig.length; j++) {
-    //
-    //         if (bracketsConfig[i][j] == '(') {
-    //             circleOpenBracket++;
-    //         }
-    //         if (bracketsConfig[i][j] == ')') {
-    //             circleCloseBracket++;
-    //         }
-    //         if (bracketsConfig[i][j] == '[') {
-    //             squareOpenBrackets++;
-    //         }
-    //         if (bracketsConfig[i][j] == ']') {
-    //             squareCloseBrackets++;
-    //         }
-    //         if (bracketsConfig[i][j] == '{') {
-    //             figureOpenBrackets++;
-    //         }
-    //         if (bracketsConfig[i][j] == '}') {
-    //             figureCloseBrackets++;
-    //         }
-    //         if (line == '|') {
-    //             line++;
-    //         }
-    //
-    //     }
-    //
-    // }
-
-    // function count(str) {
         for (let i = 0; i < str.length; i++) {
             if (str[i] == '(') {
                 circleOpenBracket++;
@@ -67,9 +38,51 @@ module.exports = function check(str, bracketsConfig) {
                 line++;
             }
         }
-    // }
 
-    return (circleOpenBracket === circleCloseBracket) && (squareOpenBrackets === squareCloseBrackets) && (figureOpenBrackets === figureCloseBrackets) && (line % 2 === 0) ? true : false;
+        if(circleOpenBracket !== circleCloseBracket ||
+         squareOpenBrackets !== squareCloseBrackets ||
+         figureOpenBrackets !== figureCloseBrackets ||
+         (line % 2 === 0 && line !== 0)){
+             return false;
+         }
 
+         let strArr = str.split('');
+
+         for (let i = 0; i < bracketsConfig.length; i++) {
+
+          for (let j = 0; j < bracketsConfig[i].length; j++) {
+
+                let idx = strArr.lastIndexOf(bracketsConfig[i][j]);
+                let element = bracketsConfig[i][j];
+                let nextElement = bracketsConfig[i][j+1];
+
+                 if ( element === strArr[idx] && idx !== strArr.length-1){
+
+                    if ( idx === strArr.indexOf(nextElement, idx) - 1 ){
+
+                     if(strArr.indexOf(nextElement, idx) === -1){
+                       return false;
+                      }
+
+                           if(strArr.length === 2){
+                             return true;
+                           }
+                           strArr.splice(idx, 2);
+                           j--;
+                           continue;
+
+                    }else if(idx === strArr.indexOf(nextElement, idx) - 2) {
+                               return false;
+                           }
+                 }else if(idx !== -1 && strArr.indexOf(nextElement, idx) === -1 && nextElement !== undefined ){
+                  return false;
+                 }
+          }
+          if(strArr.length > 2 && i === strArr.length-1){
+            i=0;
+            j=0;
+          }
+        }
+return  true;
 }
 
