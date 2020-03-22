@@ -1,60 +1,40 @@
 ﻿module.exports = function check(str, bracketsConfig) {
-	let circleOpenBracket = 0;
-	let circleCloseBracket = 0;
-	let squareOpenBrackets = 0;
-	let squareCloseBrackets = 0;
-	let figureOpenBrackets = 0;
-	let figureCloseBrackets = 0;
-	let line = 0;
+	let strArr = str.split('');
+	let el = [];
 
-	for (let i = 0; i < str.length; i++) {
-		if (str[i] == '(') {
-			circleOpenBracket++;
-			continue;
-		}
-		if (str[i] == ')') {
-			circleCloseBracket++;
-			continue;
-		}
-		if (str[i] == '[') {
-			squareOpenBrackets++;
-			continue;
-		}
-		if (str[i] == ']') {
-			squareCloseBrackets++;
-			continue;
-		}
-		if (str[i] == '{') {
-			figureOpenBrackets++;
-			continue;
-		}
-		if (str[i] == '}') {
-			figureCloseBrackets++;
-			continue;
-		}
-		if (line == '|') {
-			line++;
+	for (let i = 0; i < bracketsConfig.length; i++) {
+		for (let j = 0; j < bracketsConfig[i].length; j++) {
+			let mass = [];
+			let idx = strArr.indexOf(bracketsConfig[i][j]);
+
+			while (idx !== -1) {
+				mass.push(idx);
+				idx = strArr.indexOf(bracketsConfig[i][j], idx + 1);
+			}
+			el.push(mass);
 		}
 	}
 
-	if (
-		circleOpenBracket !== circleCloseBracket ||
-		squareOpenBrackets !== squareCloseBrackets ||
-		figureOpenBrackets !== figureCloseBrackets ||
-		(line % 2 === 0 && line !== 0)
-	) {
-		return false;
+	for (let i = 0; i < bracketsConfig.length; i += 2) {
+		for (let j = 0; j < bracketsConfig[i].length; j++) {
+			if (bracketsConfig[i][j] === bracketsConfig[i][j + 1]) {
+				if ((el[i].length - 1) % 2 === 0 && el[i].length - 1 === 0) {
+					return false;
+				}
+			} else if (el[i].length !== el[i + 1].length) {
+				return false;
+			}
+		}
 	}
 
 	let iter = 0;
-	let strArr = str.split('');
 	let count = 0;
+
 	for (let i = 0; i < bracketsConfig.length; i++) {
 		for (let j = 0; j < bracketsConfig[i].length; j++) {
 			let idx = strArr.lastIndexOf(bracketsConfig[i][j]);
 			let element = bracketsConfig[i][j];
 			let nextElement = bracketsConfig[i][j + 1];
-
 			let idxDouble = strArr.indexOf(bracketsConfig[i][j], iter);
 			let nextElementDouble = strArr.indexOf(bracketsConfig[i][j], idxDouble + 1);
 
@@ -69,6 +49,7 @@
 					j--;
 					continue;
 				}
+
 				if (strArr[idxDouble] === strArr[idxDouble + 1]) {
 					strArr.splice(idxDouble, 2);
 					j--;
@@ -82,6 +63,7 @@
 				if (count % 2 === 0) {
 					return false;
 				}
+
 				iter = nextElementDouble + 1;
 				j--;
 				continue;
@@ -96,6 +78,7 @@
 					if (strArr.length === 2) {
 						return true;
 					}
+
 					strArr.splice(idx, 2);
 					j--;
 					continue;
